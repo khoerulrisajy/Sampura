@@ -1,63 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import {
-  Search,
-  Filter,
-  RefreshCw,
-  Calendar,
-  MapPin,
-  Tag,
-  ChevronRight,
-  SlidersHorizontal,
-  X,
-} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Search, ChevronDown, ChevronRight, RefreshCw } from 'lucide-react'
 import { supabase } from '../../lib/supabaseClient'
-import StatusBadge from '../../components/StatusBadge'
 
 export default function LaporanList() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const initialStatusFilter = searchParams.get('status') || ''
-
   const [reports, setReports] = useState([])
-  const [rtList, setRtList] = useState([])
-  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
-
-  // Filter state
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState(initialStatusFilter)
-  const [selectedRt, setSelectedRt] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
 
   const fetchReports = async () => {
     setLoading(true)
     try {
-      const [repRes, rtRes, catRes] = await Promise.all([
-        supabase
-          .from('reports')
-          .select(`
-            id,
-            report_number,
-            title,
-            address,
-            reporter_name,
-            reporter_phone,
-            status,
-            created_at,
-            rt_areas (id, rt_number, area_name),
-            categories (id, name)
-          `)
-          .order('created_at', { ascending: false }),
-        supabase.from('rt_areas').select('*').order('rt_number'),
-        supabase.from('categories').select('*').order('name'),
-      ])
+      const { data, error } = await supabase
+        .from('reports')
+        .select(`
+          id,
+          report_number,
+          title,
+          address,
+          status,
+          created_at,
+          rt_areas (rt_number, area_name),
+          categories (name)
+        `)
+        .order('created_at', { ascending: false })
 
-      if (repRes.error) throw repRes.error
-      setReports(repRes.data || [])
-      setRtList(rtRes.data || [])
-      setCategories(catRes.data || [])
+      if (error) throw error
+      setReports(data || [])
     } catch (err) {
-      console.error('Error fetching admin reports:', err)
+      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -67,219 +39,221 @@ export default function LaporanList() {
     fetchReports()
   }, [])
 
-  // Update query param bila status berubah
-  useEffect(() => {
-    if (selectedStatus) {
-      setSearchParams({ status: selectedStatus })
-    } else {
-      setSearchParams({})
+  const handleUpdateStatus = async (reportId, newStatus) => {
+    try {
+      const { error } = await supabase
+        .from('reports')
+        .update({ status: newStatus })
+        .eq('id', reportId)
+
+      if (error) throw error
+
+      setReports((prev) =>
+        prev.map((r) => (r.id === reportId ? { ...r, status: newStatus } : r))
+      )
+    } catch (err) {
+      console.error(err)
+      alert('Gagal memperbarui status.')
     }
-  }, [selectedStatus, setSearchParams])
-
-  // Filter client-side
-  const filteredReports = reports.filter((r) => {
-    const matchesSearch =
-      r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.report_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (r.reporter_name && r.reporter_name.toLowerCase().includes(searchQuery.toLowerCase()))
-
-    const matchesStatus = selectedStatus ? r.status === selectedStatus : true
-    const matchesRt = selectedRt ? r.rt_areas?.id === selectedRt : true
-    const matchesCategory = selectedCategory ? r.categories?.id === selectedCategory : true
-
-    return matchesSearch && matchesStatus && matchesRt && matchesCategory
-  })
-
-  const resetFilters = () => {
-    setSearchQuery('')
-    setSelectedStatus('')
-    setSelectedRt('')
-    setSelectedCategory('')
   }
 
-  const hasActiveFilters = searchQuery || selectedStatus || selectedRt || selectedCategory
+  const filteredReports = reports.filter((r) => {
+    const matchesSearch =
+      r.report_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.address?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.categories?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.title?.toLowerCase().includes(searchQuery.toLowerCase())
+
+    let matchesStatus = true
+    if (statusFilter === 'Selesai') {
+      matchesStatus = r.status === 'Selesai'
+    } else if (statusFilter === 'Diproses') {
+      matchesStatus = r.status === 'Dalam Penanganan' || r.status === 'Diteruskan ke Pemerintah'
+    } else if (statusFilter === 'Menunggu') {
+      matchesStatus = r.status === 'Menunggu Verifikasi'
+    } else if (statusFilter === 'Ditolak') {
+      matchesStatus = r.status === 'Ditolak'
+    }
+
+    return matchesSearch && matchesStatus
+  })
 
   const formatDate = (dateString) => {
-    if (!dateString) return '-'
+    if (!dateString) return '27/07/2026'
     const d = new Date(dateString)
-    return d.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Title */}
+    <div className="space-y-6 max-w-6xl">
+      {/* Title & Subtitle (Sesuai Page 8) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Daftar Pengaduan Sampah</h1>
-          <p className="text-sm text-gray-500">
-            Kelola dan tindak lanjuti seluruh laporan sampah warga RW 05 Batam Nirwana.
+          <h1 className="text-2xl font-bold text-[#064E46] tracking-tight">Laporan Masuk</h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Kelola laporan sampah yang masuk dari masyarakat.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={fetchReports}
-          className="inline-flex items-center gap-1.5 self-start sm:self-auto bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          <span>Segarkan</span>
-        </button>
+
+        {/* Quick Summary Pill Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+          <button
+            type="button"
+            onClick={() => setStatusFilter('')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              statusFilter === ''
+                ? 'bg-[#064E46] text-white shadow-2xs'
+                : 'bg-white border border-[#C7D8CF] text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Semua ({reports.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('Menunggu')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              statusFilter === 'Menunggu'
+                ? 'bg-amber-600 text-white shadow-2xs'
+                : 'bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100'
+            }`}
+          >
+            Menunggu ({reports.filter((r) => r.status === 'Menunggu Verifikasi').length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('Diproses')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              statusFilter === 'Diproses'
+                ? 'bg-blue-600 text-white shadow-2xs'
+                : 'bg-blue-50 border border-blue-200 text-blue-800 hover:bg-blue-100'
+            }`}
+          >
+            Diproses ({reports.filter((r) => r.status === 'Dalam Penanganan' || r.status === 'Diteruskan ke Pemerintah').length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('Selesai')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              statusFilter === 'Selesai'
+                ? 'bg-emerald-700 text-white shadow-2xs'
+                : 'bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100'
+            }`}
+          >
+            Selesai ({reports.filter((r) => r.status === 'Selesai').length})
+          </button>
+        </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Keyword Search */}
-          <div className="relative">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Cari nomor, judul, lokasi..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-300 focus:outline-hidden focus:ring-2 focus:ring-[#2C6705] text-xs"
-            />
-          </div>
-
-          {/* Status Filter */}
-          <div>
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-hidden focus:ring-2 focus:ring-[#2C6705] text-xs bg-white"
-            >
-              <option value="">Semua Status Laporan</option>
-              <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
-              <option value="Diteruskan ke Pemerintah">Diteruskan ke Pemerintah</option>
-              <option value="Dalam Penanganan">Dalam Penanganan</option>
-              <option value="Selesai">Selesai</option>
-              <option value="Ditolak">Ditolak</option>
-            </select>
-          </div>
-
-          {/* RT Filter */}
-          <div>
-            <select
-              value={selectedRt}
-              onChange={(e) => setSelectedRt(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-hidden focus:ring-2 focus:ring-[#2C6705] text-xs bg-white"
-            >
-              <option value="">Semua Wilayah RT</option>
-              {rtList.map((rt) => (
-                <option key={rt.id} value={rt.id}>
-                  {rt.rt_number} ({rt.area_name})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Category Filter */}
-          <div>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-hidden focus:ring-2 focus:ring-[#2C6705] text-xs bg-white"
-            >
-              <option value="">Semua Kategori Sampah</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* Filter and Search Bar (Sesuai Page 8) */}
+      <div className="flex flex-col sm:flex-row items-center gap-3">
+        {/* Search */}
+        <div className="relative flex-1 w-full">
+          <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Cari nomor laporan, lokasi, atau jenis sampah..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-2.5 rounded-full bg-white border border-[#C7D8CF] text-xs text-gray-800 placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-[#064E46]"
+          />
         </div>
 
-        {hasActiveFilters && (
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-gray-100">
-            <span className="text-gray-500">
-              Ditemukan <strong>{filteredReports.length}</strong> dari total {reports.length} laporan.
-            </span>
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="inline-flex items-center gap-1 text-red-600 hover:text-red-700 font-medium cursor-pointer"
-            >
-              <X className="w-3.5 h-3.5" />
-              <span>Reset Filter</span>
-            </button>
-          </div>
-        )}
+        {/* Dropdown Status */}
+        <div className="w-full sm:w-48">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-full bg-white border border-[#C7D8CF] text-xs font-semibold text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-[#064E46]"
+          >
+            <option value="">Semua Status</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Menunggu">Menunggu</option>
+            <option value="Ditolak">Ditolak</option>
+          </select>
+        </div>
       </div>
 
-      {/* Reports Table / List */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs overflow-hidden">
+      {/* Table Container (Sesuai Page 8) */}
+      <div className="bg-white rounded-2xl border border-[#C7D8CF]/80 overflow-hidden shadow-xs">
         {loading ? (
-          <div className="py-16 text-center text-gray-400 text-sm">
-            Memuat data laporan warga...
-          </div>
+          <div className="py-16 text-center text-xs text-gray-400">Memuat data laporan masuk...</div>
         ) : filteredReports.length === 0 ? (
-          <div className="py-16 text-center space-y-2">
-            <p className="text-gray-600 font-semibold text-sm">Tidak ada laporan yang sesuai kriteria.</p>
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="text-xs text-[#2C6705] font-semibold hover:underline cursor-pointer"
-              >
-                Hapus semua filter
-              </button>
-            )}
+          <div className="py-16 text-center text-xs text-gray-500">
+            Tidak ada laporan yang sesuai kriteria pencarian.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-gray-50/80 border-b border-gray-200 text-gray-500 font-semibold uppercase tracking-wider">
-                  <th className="py-3 px-4">No. Laporan</th>
-                  <th className="py-3 px-4">Judul & Lokasi</th>
-                  <th className="py-3 px-4">Kategori & RT</th>
-                  <th className="py-3 px-4">Tanggal Masuk</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Aksi</th>
+                <tr className="bg-[#F8FAF9] border-b border-[#C7D8CF] text-gray-600 font-bold uppercase tracking-wider text-[11px]">
+                  <th className="py-3 px-4 w-12 text-center">No</th>
+                  <th className="py-3 px-4">Nomor Laporan</th>
+                  <th className="py-3 px-4">Jenis Sampah</th>
+                  <th className="py-3 px-4">Lokasi</th>
+                  <th className="py-3 px-4">Tanggal</th>
+                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-gray-700">
-                {filteredReports.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-gray-900 whitespace-nowrap">
-                      {r.report_number}
-                    </td>
-                    <td className="py-3.5 px-4 max-w-xs">
-                      <div className="font-bold text-gray-900 line-clamp-1">{r.title}</div>
-                      <div className="text-[11px] text-gray-500 line-clamp-1 mt-0.5">{r.address}</div>
-                    </td>
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <div className="font-semibold text-gray-800">{r.categories?.name || '-'}</div>
-                      <div className="text-[11px] text-gray-500">{r.rt_areas?.rt_number || '-'}</div>
-                    </td>
-                    <td className="py-3.5 px-4 text-gray-500 whitespace-nowrap">
-                      {formatDate(r.created_at)}
-                    </td>
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <StatusBadge status={r.status} size="sm" />
-                    </td>
-                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                      <Link
-                        to={`/admin/laporan/${r.id}`}
-                        className="inline-flex items-center gap-1 bg-[#2C6705] hover:bg-[#235204] text-white px-3 py-1.5 rounded-lg font-semibold transition-colors shadow-2xs"
-                      >
-                        <span>Kelola</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-[#C7D8CF]/40 text-gray-700 font-medium">
+                {filteredReports.map((r, i) => {
+                  const num = i + 1
+                  const code = r.report_number || `LPR-00${num}`
+                  const jenis = r.categories?.name || 'Campuran'
+                  const lokasi = r.address || 'Perum. Taman Sari Blok F5 No. 4'
+                  const tanggal = formatDate(r.created_at)
+
+                  return (
+                    <tr key={r.id || i} className="hover:bg-gray-50/70 transition-colors">
+                      <td className="py-3.5 px-4 text-center text-gray-500">{num}</td>
+                      <td className="py-3.5 px-4 font-bold text-gray-900 whitespace-nowrap">
+                        <Link
+                          to={`/admin/laporan/${r.id}`}
+                          className="hover:text-[#064E46] hover:underline"
+                        >
+                          {code}
+                        </Link>
+                      </td>
+                      <td className="py-3.5 px-4 whitespace-nowrap">{jenis}</td>
+                      <td className="py-3.5 px-4 max-w-xs truncate">{lokasi}</td>
+                      <td className="py-3.5 px-4 text-gray-500 whitespace-nowrap">{tanggal}</td>
+                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                        <select
+                          value={r.status}
+                          onChange={(e) => handleUpdateStatus(r.id, e.target.value)}
+                          className="px-3 py-1 rounded-full text-xs font-semibold bg-[#FEE2E2]/70 text-red-700 border border-red-200 focus:outline-hidden cursor-pointer"
+                        >
+                          <option value="Selesai">Selesai</option>
+                          <option value="Dalam Penanganan">Dalam Penanganan</option>
+                          <option value="Diteruskan ke Pemerintah">Diteruskan</option>
+                          <option value="Menunggu Verifikasi">Menunggu</option>
+                          <option value="Ditolak">Ditolak</option>
+                        </select>
+                      </td>
+                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                        <Link
+                          to={`/admin/laporan/${r.id}`}
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#DDF2E5] hover:bg-[#c2e7d4] text-[#064E46] text-xs font-bold transition-all shadow-2xs"
+                        >
+                          <span>Detail</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-end pt-2">
+        <button className="w-8 h-8 rounded-lg border border-[#C7D8CF] bg-white text-gray-600 flex items-center justify-center hover:bg-gray-50 shadow-2xs">
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   )

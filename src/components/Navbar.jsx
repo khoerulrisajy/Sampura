@@ -9,30 +9,31 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Beranda', path: '/' },
     { name: 'Lapor Sampah', path: '/lapor' },
-    { name: 'Jadwal Pengangkutan', path: '/jadwal' },
+    { name: 'Tentang', path: '/tentang' },
     { name: 'Cek Status', path: '/cek-status' },
-    { name: 'Tentang & FAQ', path: '/panduan' },
   ]
 
   const isActive = (path) => {
-    return location.pathname === path
+    if (path === '/') return location.pathname === '/'
+    return location.pathname.startsWith(path)
   }
 
   return (
     <header className="bg-white border-b border-[#C7D8CF]/60 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Logo & Brand Name */}
-        <Link to="/" className="flex items-center gap-2.5 group focus:outline-hidden">
+        {/* Logo & Brand Name (Sesuai Page 1) */}
+        <Link to="/" className="flex items-center gap-3 group focus:outline-hidden">
           <div className="text-[#064E46] transition-transform group-hover:scale-105 duration-200">
             <svg
-              className="w-8 h-8"
+              className="w-9 h-9"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="1.8"
+              strokeWidth="1.9"
               viewBox="0 0 32 32"
             >
+              {/* Truck body outline with integrated eco-leaf in cargo */}
               <rect height="15" rx="2" width="17" x="2" y="7"></rect>
               <path d="M19 12h5.5l3.5 4v6h-9"></path>
               <circle cx="8" cy="24" r="2.5"></circle>
@@ -50,8 +51,8 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Center Navigation Links */}
-        <nav className="hidden md:flex items-center space-x-7 lg:space-x-9 text-[15px] font-semibold text-[#064E46]/85">
+        {/* Center Navigation Links (Sesuai Page 2) */}
+        <nav className="hidden md:flex items-center space-x-9 text-[15px] font-semibold text-[#064E46]/85">
           {navLinks.map((link) => {
             const active = isActive(link.path)
             return (
@@ -70,7 +71,7 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Action Button: Admin */}
+        {/* Right Action Button: Admin (Sesuai Page 2) */}
         <div className="hidden md:flex items-center">
           <Link
             to="/login"
@@ -100,7 +101,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="md:hidden border-b border-[#C7D8CF] bg-white px-4 pt-3 pb-6 space-y-2">
+        <div className="md:hidden border-b border-[#C7D8CF] bg-white px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top duration-200">
           {navLinks.map((link) => {
             const active = isActive(link.path)
             return (

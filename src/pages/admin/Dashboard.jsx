@@ -112,22 +112,22 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#2C6705] to-[#427a1b] rounded-2xl p-6 sm:p-8 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#064E46] to-[#0B594E] rounded-3xl p-6 sm:p-8 text-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs uppercase font-semibold tracking-wider text-emerald-200 block">
+          <span className="text-xs uppercase font-bold tracking-wider text-emerald-300 block">
             Portal Kelola RW 05 Batam Nirwana
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold mt-1">
             Selamat Datang, {profile?.full_name || 'Admin RW'}!
           </h1>
-          <p className="text-sm text-emerald-100 mt-1 max-w-xl">
+          <p className="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-xl">
             Pantau dan verifikasi pengaduan sampah warga sebelum diteruskan ke dinas kebersihan pemerintah.
           </p>
         </div>
         <button
           type="button"
           onClick={fetchDashboardData}
-          className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold backdrop-blur-xs transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white px-5 py-2.5 rounded-full text-xs font-semibold backdrop-blur-xs transition-colors cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Segarkan Data</span>
@@ -139,13 +139,13 @@ export default function AdminDashboard() {
         <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex items-center justify-between gap-4 animate-pulse">
           <div className="flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-            <span className="text-sm text-amber-900 font-medium">
+            <span className="text-xs sm:text-sm text-amber-900 font-medium">
               Ada <strong>{stats.menunggu} laporan warga</strong> yang baru masuk dan butuh verifikasi Anda segera.
             </span>
           </div>
           <Link
-            to="/admin/laporan?status=Menunggu+Verifikasi"
-            className="shrink-0 text-xs font-bold text-amber-800 hover:text-amber-900 bg-amber-200/80 px-3 py-1.5 rounded-lg transition-colors"
+            to="/admin/laporan"
+            className="shrink-0 text-xs font-bold text-amber-900 hover:bg-amber-300 bg-amber-200 px-4 py-1.5 rounded-full transition-colors"
           >
             Lihat Laporan
           </Link>
@@ -155,9 +155,9 @@ export default function AdminDashboard() {
       {/* Stat Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {/* Total Card */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-2xs col-span-2 sm:col-span-1">
+        <div className="bg-white border border-[#C7D8CF] rounded-2xl p-4 shadow-2xs col-span-2 sm:col-span-1">
           <span className="text-xs text-gray-500 font-medium block">Total Pengaduan</span>
-          <span className="text-2xl sm:text-3xl font-black text-gray-900 mt-1 block">
+          <span className="text-2xl sm:text-3xl font-black text-[#064E46] mt-1 block">
             {stats.total}
           </span>
           <span className="text-[10px] text-gray-400 mt-1 block">Seluruh laporan se-RW</span>
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
           return (
             <Link
               key={i}
-              to={`/admin/laporan?status=${encodeURIComponent(c.filter)}`}
+              to="/admin/laporan"
               className={`border rounded-2xl p-4 shadow-2xs hover:shadow-sm transition-all group flex flex-col justify-between ${c.color}`}
             >
               <div className="flex items-center justify-between">
@@ -191,15 +191,15 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Reports Section */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+      <div className="bg-white rounded-2xl border border-[#C7D8CF]/80 shadow-xs p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-[#2C6705]" />
+          <h2 className="text-base font-bold text-[#064E46] flex items-center gap-2">
+            <FileText className="w-5 h-5 text-[#064E46]" />
             <span>Laporan Terbaru Masuk</span>
           </h2>
           <Link
             to="/admin/laporan"
-            className="text-xs font-semibold text-[#2C6705] hover:text-[#235204] flex items-center gap-1"
+            className="text-xs font-semibold text-[#064E46] hover:text-[#0B594E] flex items-center gap-1 hover:underline"
           >
             <span>Lihat Semua Laporan</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -207,11 +207,11 @@ export default function AdminDashboard() {
         </div>
 
         {loading ? (
-          <div className="py-12 text-center text-gray-400 text-sm">
+          <div className="py-12 text-center text-gray-400 text-xs">
             Memuat daftar laporan terbaru...
           </div>
         ) : recentReports.length === 0 ? (
-          <div className="py-10 text-center text-gray-500 text-sm">
+          <div className="py-10 text-center text-gray-500 text-xs">
             Belum ada laporan pengaduan sampah yang masuk.
           </div>
         ) : (
@@ -227,7 +227,7 @@ export default function AdminDashboard() {
                       {r.report_number}
                     </span>
                     <span className="text-xs text-gray-400">•</span>
-                    <span className="text-xs font-semibold text-[#2C6705]">
+                    <span className="text-xs font-semibold text-[#064E46]">
                       {r.rt_areas?.rt_number || 'RT'}
                     </span>
                     <span className="text-xs text-gray-400">•</span>
@@ -235,14 +235,14 @@ export default function AdminDashboard() {
                       {r.categories?.name || 'Umum'}
                     </span>
                   </div>
-                  <h3 className="text-sm font-bold text-gray-900 line-clamp-1">{r.title}</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-gray-900 line-clamp-1">{r.title}</h3>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
                   <StatusBadge status={r.status} size="sm" />
                   <Link
                     to={`/admin/laporan/${r.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-[#2C6705] bg-gray-100 hover:bg-[#2C6705]/10 px-3 py-1.5 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#064E46] bg-[#DDF2E5]/70 hover:bg-[#DDF2E5] px-3.5 py-1.5 rounded-full transition-colors"
                   >
                     <span>Detail</span>
                     <ChevronRight className="w-3.5 h-3.5" />

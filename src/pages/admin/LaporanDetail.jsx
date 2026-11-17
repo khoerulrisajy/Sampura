@@ -231,7 +231,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
   if (loading) {
     return (
       <div className="py-24 text-center text-gray-500">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2C6705] mx-auto mb-3" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#064E46] mx-auto mb-3" />
         <p className="text-sm">Memuat rincian laporan pengaduan...</p>
       </div>
     )
@@ -244,7 +244,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
         <p>{errorMsg || 'Data laporan tidak ditemukan.'}</p>
         <Link
           to="/admin/laporan"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white px-4 py-2 rounded-xl shadow-2xs text-gray-800"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white px-4 py-2 rounded-full shadow-2xs text-gray-800"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Kembali ke Daftar Laporan</span>
@@ -254,12 +254,12 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-5xl">
       {/* Top Action Back Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           to="/admin/laporan"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#064E46] hover:underline transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Kembali ke Daftar Laporan</span>
@@ -272,7 +272,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
               <button
                 type="button"
                 onClick={() => setShowRejectModal(true)}
-                className="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-4 py-2 rounded-full text-xs font-bold transition-colors cursor-pointer"
               >
                 <XCircle className="w-4 h-4" />
                 <span>Tolak Laporan</span>
@@ -281,7 +281,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
               <button
                 type="button"
                 onClick={() => setShowForwardModal(true)}
-                className="inline-flex items-center gap-1.5 bg-[#2C6705] hover:bg-[#235204] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-[#064E46] hover:bg-[#0B594E] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
                 <Send className="w-4 h-4" />
                 <span>Teruskan ke WhatsApp Pemerintah</span>
@@ -298,7 +298,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
                 setInternalNote('')
                 setShowUpdateModal(true)
               }}
-              className="inline-flex items-center gap-1.5 bg-[#2C6705] hover:bg-[#235204] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 bg-[#064E46] hover:bg-[#0B594E] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer"
             >
               <Clock className="w-4 h-4" />
               <span>Perbarui Status Penanganan</span>
@@ -308,22 +308,22 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
       </div>
 
       {/* Main Header Banner */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-3xl border border-[#C7D8CF]/80 shadow-xs p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono font-bold text-gray-400">
               {report.report_number}
             </span>
             <span className="text-xs text-gray-300">•</span>
-            <span className="text-xs font-semibold text-[#2C6705]">
+            <span className="text-xs font-bold text-[#064E46]">
               {report.rt_areas?.rt_number}
             </span>
             <span className="text-xs text-gray-300">•</span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 font-medium">
               {report.categories?.name}
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">{report.title}</h1>
+          <h1 className="text-2xl font-extrabold text-[#064E46]">{report.title}</h1>
           <p className="text-xs text-gray-500">
             Diterima sistem pada: {formatDate(report.created_at)}
           </p>
@@ -404,17 +404,17 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
         </div>
 
         {/* Right Column: Peta Lokasi */}
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-6 space-y-3">
+        <div className="bg-white rounded-3xl border border-[#C7D8CF]/80 shadow-xs p-6 space-y-3">
           <div className="flex items-center justify-between border-b border-gray-100 pb-2">
             <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[#2C6705]" />
+              <MapPin className="w-4 h-4 text-[#064E46]" />
               <span>Titik Lokasi Sampah</span>
             </h3>
             <a
               href={`https://www.google.com/maps?q=${report.latitude},${report.longitude}`}
               target="_blank"
               rel="noreferrer"
-              className="text-xs text-[#2C6705] hover:underline flex items-center gap-1"
+              className="text-xs text-[#064E46] hover:underline flex items-center gap-1 font-semibold"
             >
               <span>Buka Google Maps</span>
               <ExternalLink className="w-3 h-3" />
@@ -434,9 +434,9 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
 
       {/* Foto Bukti Lapangan */}
       {images.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-6 space-y-3">
-          <h3 className="font-bold text-gray-900 text-sm border-b border-gray-100 pb-2 flex items-center gap-2">
-            <ImageIcon className="w-4 h-4 text-[#2C6705]" />
+        <div className="bg-white rounded-3xl border border-[#C7D8CF]/80 shadow-xs p-6 space-y-3">
+          <h3 className="font-bold text-[#064E46] text-sm border-b border-gray-100 pb-2 flex items-center gap-2">
+            <ImageIcon className="w-4 h-4 text-[#064E46]" />
             <span>Foto Bukti Lapangan ({images.length} Foto)</span>
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -445,14 +445,14 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
                 key={img.id}
                 type="button"
                 onClick={() => setActiveImageZoom(img.image_url)}
-                className="aspect-square rounded-xl overflow-hidden border border-gray-200 hover:border-[#2C6705] transition-all relative group cursor-pointer shadow-2xs"
+                className="aspect-square rounded-2xl overflow-hidden border border-[#C7D8CF] hover:border-[#064E46] transition-all relative group cursor-pointer shadow-2xs"
               >
                 <img
                   src={img.image_url}
                   alt={`Bukti ${idx + 1}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+                <div className="absolute inset-0 bg-[#064E46]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
                   Lihat Foto
                 </div>
               </button>
@@ -462,19 +462,19 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
       )}
 
       {/* Riwayat Status Lengkap (Termasuk Catatan Internal) */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-6 sm:p-8 space-y-6">
+      <div className="bg-white rounded-3xl border border-[#C7D8CF]/80 shadow-xs p-6 sm:p-8 space-y-6">
         <div className="border-b border-gray-100 pb-3 flex items-center justify-between">
-          <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[#2C6705]" />
+          <h3 className="font-bold text-[#064E46] text-base flex items-center gap-2">
+            <Clock className="w-5 h-5 text-[#064E46]" />
             <span>Log Riwayat Status & Catatan Internal</span>
           </h3>
           <span className="text-xs text-gray-400">Arsip Pengelola</span>
         </div>
 
-        <div className="relative pl-6 sm:pl-8 border-l-2 border-emerald-200 space-y-6 my-4 ml-3 sm:ml-4">
+        <div className="relative pl-6 sm:pl-8 border-l-2 border-[#DDF2E5] space-y-6 my-4 ml-3 sm:ml-4">
           {history.map((hist) => (
             <div key={hist.id} className="relative">
-              <div className="absolute -left-[31px] sm:-left-[39px] top-1 w-6 h-6 rounded-full bg-[#2C6705] text-white flex items-center justify-center text-xs shadow-sm ring-4 ring-white">
+              <div className="absolute -left-[31px] sm:-left-[39px] top-1 w-6 h-6 rounded-full bg-[#064E46] text-white flex items-center justify-center text-xs shadow-sm ring-4 ring-white">
                 <CheckCircle2 className="w-4 h-4" />
               </div>
 
@@ -576,7 +576,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="font-bold text-gray-900 text-lg flex items-center gap-2 text-[#2C6705]">
+              <h3 className="font-bold text-lg flex items-center gap-2 text-[#064E46]">
                 <Send className="w-5 h-5" />
                 <span>Teruskan ke Instansi Pemerintah</span>
               </h3>
@@ -587,13 +587,13 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
 
             <div className="space-y-3 text-xs text-gray-600">
               <p>
-                Langkah 1: Klik tombol <strong>"Kirim via WhatsApp"</strong> di bawah untuk membuka draf pesan pengaduan resmi.
+                Langkah 1: Klik tombol <strong>"Buka WhatsApp"</strong> di bawah untuk membuka draf pesan pengaduan resmi.
               </p>
-              <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 font-mono text-[11px] max-h-40 overflow-y-auto whitespace-pre-wrap text-gray-700">
+              <div className="bg-[#F5F9F7] p-3.5 rounded-2xl border border-[#C7D8CF] font-mono text-[11px] max-h-40 overflow-y-auto whitespace-pre-wrap text-gray-800">
                 {generateWhatsAppMessage()}
               </div>
-              <p className="text-amber-800 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-                Langkah 2: Setelah pesan terkirim di WhatsApp ke kontak dinas, klik tombol <strong>"Konfirmasi Sudah Terkirim"</strong> di bawah untuk memperbarui status di dashboard.
+              <p className="text-[#064E46] bg-[#DDF2E5] p-3 rounded-2xl border border-[#C7D8CF]/80">
+                Langkah 2: Setelah pesan terkirim di WhatsApp ke kontak dinas, klik tombol <strong>"Konfirmasi Terkirim"</strong> di bawah untuk memperbarui status di dashboard.
               </p>
             </div>
 
@@ -601,7 +601,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
               <button
                 type="button"
                 onClick={handleOpenWhatsApp}
-                className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-semibold shadow-xs transition-colors"
+                className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 rounded-full text-xs font-bold shadow-xs transition-colors cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Buka WhatsApp</span>
@@ -610,7 +610,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
                 type="button"
                 disabled={isProcessing}
                 onClick={handleConfirmForwarded}
-                className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 bg-[#2C6705] hover:bg-[#235204] text-white py-2.5 rounded-xl text-xs font-semibold shadow-xs transition-colors"
+                className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 bg-[#064E46] hover:bg-[#0B594E] text-white py-2.5 rounded-full text-xs font-bold shadow-xs transition-colors cursor-pointer"
               >
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                 <span>Konfirmasi Terkirim</span>
@@ -623,9 +623,9 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
       {/* Modal 3: Pembaruan Status Lanjutan */}
       {showUpdateModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="font-bold text-gray-900 text-lg flex items-center gap-2 text-[#2C6705]">
+              <h3 className="font-bold text-lg flex items-center gap-2 text-[#064E46]">
                 <Clock className="w-5 h-5" />
                 <span>Perbarui Status Laporan</span>
               </h3>
@@ -636,13 +636,13 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
 
             <form onSubmit={handleUpdateStatusSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
                   Status Baru
                 </label>
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs font-semibold"
+                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#064E46]"
                 >
                   <option value="Dalam Penanganan">Dalam Penanganan (Pemerintah sedang bertindak)</option>
                   <option value="Selesai">Selesai (Sampah telah bersih tuntas)</option>
@@ -650,7 +650,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
                   Catatan Publik (Tampil ke Warga)
                 </label>
                 <textarea
@@ -658,12 +658,12 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
                   value={publicNote}
                   onChange={(e) => setPublicNote(e.target.value)}
                   placeholder="Informasi yang dapat dibaca warga di menu Cek Status..."
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs focus:ring-2 focus:ring-[#2C6705]"
+                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs focus:outline-hidden focus:ring-2 focus:ring-[#064E46]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1 flex items-center gap-1">
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1 flex items-center gap-1">
                   <Lock className="w-3 h-3 text-amber-600" />
                   <span>Catatan Internal (Khusus Arsip Admin RW)</span>
                 </label>
@@ -672,7 +672,7 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
                   value={internalNote}
                   onChange={(e) => setInternalNote(e.target.value)}
                   placeholder="Catatan rahasia/koordinasi internal yang tidak tampil ke publik..."
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs focus:ring-2 focus:ring-[#2C6705]"
+                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs focus:outline-hidden focus:ring-2 focus:ring-[#064E46]"
                 />
               </div>
 
@@ -680,14 +680,14 @@ _Laporan ini telah diverifikasi oleh Admin RW 05 Batam Nirwana dan diteruskan un
                 <button
                   type="button"
                   onClick={() => setShowUpdateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl"
+                  className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-full"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="px-5 py-2.5 text-xs font-semibold bg-[#2C6705] hover:bg-[#235204] text-white rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+                  className="px-6 py-2.5 text-xs font-bold bg-[#064E46] hover:bg-[#0B594E] text-white rounded-full shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                   <span>Simpan Perubahan</span>

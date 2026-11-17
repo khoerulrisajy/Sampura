@@ -10,7 +10,8 @@ import LaporSampah from './pages/laporsampah'
 import Konfirmasi from './pages/konfirmasi'
 import CekStatus from './pages/cekstatus'
 import Jadwal from './pages/jadwal'
-import { Panduan, FAQ, Tentang, Kontak } from './pages/informasi'
+import Tentang from './pages/tentang'
+import { Panduan, FAQ, Kontak } from './pages/informasi'
 import Login from './pages/login'
 
 // Admin RW Pages
@@ -19,6 +20,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import LaporanList from './pages/admin/LaporanList'
 import LaporanDetail from './pages/admin/LaporanDetail'
 import AdminJadwal from './pages/admin/AdminJadwal'
+import AdminSettings from './pages/admin/AdminSettings'
 
 // Petugas Kebersihan Pages
 import PetugasLayout from './pages/petugas/PetugasLayout'
@@ -50,11 +52,12 @@ function App() {
           {/* Admin RW Protected Routes */}
           <Route element={<ProtectedRoute allowedRoles={['admin_rw']} />}>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
+              <Route index element={<LaporanList />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="laporan" element={<LaporanList />} />
               <Route path="laporan/:id" element={<LaporanDetail />} />
               <Route path="jadwal" element={<AdminJadwal />} />
+              <Route path="pengaturan" element={<AdminSettings />} />
             </Route>
           </Route>
 
